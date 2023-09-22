@@ -19,10 +19,10 @@ ProductRouter.post(
     upload.single('imageUrl'),
     productController.addProduct)
 
-// To get the product against specified id using root parameters
-ProductRouter.get("/:id", productController.getProduct)
-
 // To get the filtered data
 ProductRouter.get('/filter', productController.filterProducts)
+
+// To get the product against specified id using root parameters
+ProductRouter.get("/:id", productController.getProduct)
 
 export default ProductRouter

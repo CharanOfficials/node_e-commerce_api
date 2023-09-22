@@ -27,6 +27,7 @@ class ProductController {
     }
     //  to get a single product using form data
     getProduct(req, res) {
+        console.log("getProduct")
         const id = req.params.id
         const product = ProductModel.get(id)
         
@@ -37,11 +38,15 @@ class ProductController {
         }
     }
     filterProducts(req, res) {
-        const minPrice = req.query.minPrice
-        const maxPrice = req.query.maxPrice
-        const category = req.query.category
-        const result = ProductModel.filter(minPrice, maxPrice, category)
-        res.status(200).send(result)
+        const minPrice = req.query.minPrice;
+        const maxPrice = req.query.maxPrice;
+        const category = req.query.category;
+        const result = ProductModel.filter(
+            minPrice,
+            maxPrice,
+            category
+        );
+        res.status(200).send(result);
     }
 }
 export default ProductController
