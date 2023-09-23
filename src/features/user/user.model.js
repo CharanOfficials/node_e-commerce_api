@@ -1,4 +1,4 @@
-export class UserModel{
+class UserModel{
     constructor(id, name, email, password, type) {
         this.name = name,
         this.email = email,
@@ -33,4 +33,6 @@ let users = [{
     email: "customer@gmail.com",
     password: "123",
     type:"customer"
-}]
+    }]
+
+export default UserModel

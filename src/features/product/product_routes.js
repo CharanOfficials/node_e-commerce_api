@@ -2,7 +2,7 @@
 // import router from express
 import express from 'express'
 import ProductController from './product_controller.js'
-import { upload } from '../../../middleware/fileupload_middleware.js'
+import { upload } from '../../middleware/fileupload_middleware.js'
 
 // Initialize Express router and on matching the path pass the control to the associated controller
 const ProductRouter = express.Router()
@@ -22,7 +22,7 @@ ProductRouter.post(
     upload.single('imageUrl'),
     productController.addProduct)
 
-// To get the filtered data
+// To get the filtered data using query params
 ProductRouter.get('/filter', productController.filterProducts)
 
 // To get the product against specified id using root parameters

@@ -1,4 +1,4 @@
-import { UserModel } from "./user.model.js"
+import UserModel from "./user.model.js"
 import jwt from 'jsonwebtoken'
 import env from '../../env.js'
 export class UsersController{

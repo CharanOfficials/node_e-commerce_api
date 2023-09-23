@@ -1,4 +1,4 @@
-import {UserModel} from '../../user/user.model.js'
+import UserModel from '../user/user.model.js'
 class ProductModel{
   // Mapping of the class object
     constructor(id, name, desc, imageUrl, category, price, sizes) {
@@ -21,8 +21,8 @@ class ProductModel{
     const product = products.find((i) => i.id == id)
     return product;
   }
-// Get all products
-  static GetAll() {
+  // Get all products
+  static getAll() {
       return products
   }
   static filter(minPrice, maxPrice, category) {

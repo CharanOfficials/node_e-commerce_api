@@ -12,6 +12,7 @@ const jwtauth = (req, res, next) => {
     // If token then check validity
     try {
         const payloadjwt = jwt.verify(token, env.jwtSecret)
+        req.userID = payloadjwt.userId // To extract the ID in cart controller
     } catch (err) {
         // else return error
         return res.status(401).send("Unauthorized")

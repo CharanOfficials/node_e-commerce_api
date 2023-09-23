@@ -3,7 +3,7 @@ import ProductModel from './product_models.js'
 class ProductController {
     // to get all the products
     getAllProducts(req, res) {
-        const products = ProductModel.GetAll()
+        const products = ProductModel.getAll()
         res.status(200).send(products)
     }
     // to add a product
