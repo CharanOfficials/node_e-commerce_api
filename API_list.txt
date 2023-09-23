@@ -4,3 +4,12 @@ Add a Product
 Get a Product
 Rate a Product
 Filter a Product
+Rate a product
+Add items to cart
+Get items of cart 
+Remove items from cart
+
+User Controller:
+Signup: Email, name, password, type (Customer, seller)
+Signin: (Email, password)
+
