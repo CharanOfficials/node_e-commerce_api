@@ -12,8 +12,11 @@ const productController = new ProductController()
 
 // All the paths to controller methods
 ProductRouter.get("/", productController.getAllProducts)
-// router.get("/", productController.getProduct)
-// router.post("/", productController.rateProduct)
+
+// Rate a product
+ProductRouter.post("/rate", productController.rateProduct)
+
+// Add a new product
 ProductRouter.post(
     "/",
     upload.single('imageUrl'),

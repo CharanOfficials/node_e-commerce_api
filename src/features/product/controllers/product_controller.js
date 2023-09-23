@@ -23,11 +23,18 @@ class ProductController {
     }
     //  to rate a product
     rateProduct(req, res) {
-        
+        const userID = req.query.userID
+        const productID = req.query.productID
+        const rating = req.query.rating
+        const error = ProductModel.rateProduct(userID, productID, rating)
+        if (error) {
+            res.status(400).send(error)
+        } else {
+            res.status(200).send("Rating has been added.")
+        }
     }
     //  to get a single product using form data
     getProduct(req, res) {
-        console.log("getProduct")
         const id = req.params.id
         const product = ProductModel.get(id)
         

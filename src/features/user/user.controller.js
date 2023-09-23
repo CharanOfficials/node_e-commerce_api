@@ -1,4 +1,6 @@
 import { UserModel } from "./user.model.js"
+import jwt from 'jsonwebtoken'
+import env from '../../env.js'
 export class UsersController{
     signUp(req, res) {
         const { name, email, password, type } = req.body
@@ -10,7 +12,16 @@ export class UsersController{
         if (!validUser) {
             res.status(400).send("Invalid Credentials")
         } else {
-            res.status(200).send("Login successful")
+            const token = jwt.sign({
+            userId: validUser.id,
+            userEmail: validUser.email,
+            userType:validUser.type
+            }, env.jwtSecret,
+                {
+                    expiresIn:"1h"
+                }
+            )
+            res.status(200).send(token)
         }
     }
 }
