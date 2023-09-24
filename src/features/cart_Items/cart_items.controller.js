@@ -4,6 +4,7 @@ export class CartItemsController{
         const { productID, quantity } = req.query
         const userID = req.userID
         const item = CartItemModel.add(userID, productID, quantity)
+        // To check whether that there is an error
         if (typeof (item) == "string") {
             res.status(401).send(item)
         } else {
@@ -17,7 +18,7 @@ export class CartItemsController{
     }
     update(req, res) {
         const userID = req.userID
-        const { productID, quantity } = req.query
+        const { productID, quantity } = req.query // Getting query param using destructuring
         const status = CartItemModel.update(userID, productID, quantity)
         return res.status(200).send(status)
     }
@@ -30,6 +31,5 @@ export class CartItemsController{
         } else {
             return res.status(200).send("Cart item is removed")
         }
-        return res.status(200).send(result)
     }
 }
