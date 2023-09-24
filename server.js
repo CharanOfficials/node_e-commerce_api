@@ -8,6 +8,7 @@ import logger from './src/middleware/logger.middleware.js'
 // import basicAuthorizer from './src/middleware/basicauth.middleware.js'
 import jwtauth from './src/middleware/jwt.middleware.js'
 import CartRouter from './src/features/cart_Items/cart_items.router.js'
+import { ApplicaationError } from './error-handler/applicationError.js'
 // Creating server
 const server = express()
 
@@ -46,6 +47,15 @@ server.use('/api/cartItems', jwtauth, CartRouter)
 // Default request handler
 server.use((req, res) => {
     res.status(404).send("API not found. Please check our documentation for more information at /api/docs")
+})
+// Application level error handler
+server.use((err, req, res, next) => {
+    if (err instanceof ApplicaationError) {
+        return res.status(err.code).send(err.message)
+    } else {
+        console.log(err)
+        res.status(500).send("Something went wrong. Please try later")   
+    }
 })
 //  listening to port
 server.listen(3100, ()=> {

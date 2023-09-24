@@ -1,3 +1,4 @@
+import { ApplicaationError } from '../../../error-handler/applicationError.js';
 import UserModel from '../user/user.model.js'
 class ProductModel{
   // Mapping of the class object
@@ -40,11 +41,11 @@ class ProductModel{
     // Validate  User
     const user = UserModel.getAllUsers().find(u => u.id === userID)
     if (!user) {
-      return "User not found"
+      throw new ApplicaationError("User not found", 404)
     }
     const product = products.find((p) => p.id === productID)
     if (!product) {
-      return "Product not found"
+      throw new ApplicaationError("Product not found", 404)
     }
     // Check if there are any rating and if not then add ratings array which means no user rating is available
     if (!product.ratings) {

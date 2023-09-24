@@ -22,15 +22,15 @@ class ProductController {
         res.status(201).send(createdRecord) // resource created
     }
     //  to rate a product
-    rateProduct(req, res) {
-        const userID = req.query.userID
-        const productID = req.query.productID
-        const rating = req.query.rating
-        const error = ProductModel.rateProduct(userID, productID, rating)
-        if (error) {
-            res.status(400).send(error)
-        } else {
+    rateProduct(req, res, next) {
+        try {
+            const userID = req.query.userID
+            const productID = req.query.productID
+            const rating = req.query.rating
+            ProductModel.rateProduct(userID, productID, rating)
             res.status(200).send("Rating has been added.")
+        } catch (err) {
+            next(err) 
         }
     }
     //  to get a single product using form data
