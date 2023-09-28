@@ -4,7 +4,9 @@ const userRouter = express.Router()
 
 const userController = new UsersController()
 
-userRouter.post('/signin', userController.signIn)
-userRouter.post('/signup', userController.signUp)
+userRouter.post('/signin', (req, res)=>userController.signIn(req, res))
+userRouter.post('/signup', (req, res) => {
+    userController.signUp(req, res)
+})
 
 export default userRouter

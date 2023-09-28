@@ -9,6 +9,7 @@ import logger from './src/middleware/logger.middleware.js'
 import jwtauth from './src/middleware/jwt.middleware.js'
 import CartRouter from './src/features/cart_Items/cart_items.router.js'
 import { ApplicaationError } from './error-handler/applicationError.js'
+import { connectToMongoDB } from './src/config/mongodb.js'
 // Creating server
 const server = express()
 
@@ -60,4 +61,5 @@ server.use((err, req, res, next) => {
 //  listening to port
 server.listen(3100, ()=> {
     console.log("Server is up")
+    connectToMongoDB()
 })
