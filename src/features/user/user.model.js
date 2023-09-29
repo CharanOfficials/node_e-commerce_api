@@ -7,9 +7,6 @@ class UserModel{
         this.password = password;
         this.type = type;
     }
-    static getAllUsers() {
-        return users
-    }
 }
 
 export default UserModel

@@ -10,9 +10,11 @@ import jwtauth from './src/middleware/jwt.middleware.js'
 import CartRouter from './src/features/cart_Items/cart_items.router.js'
 import { ApplicaationError } from './error-handler/applicationError.js'
 import { connectToMongoDB } from './src/config/mongodb.js'
+import dotenv from 'dotenv'
 // Creating server
 const server = express()
-
+// Load all the environment variables
+dotenv.config()
 // CORS policy configuration for server to allow below client
 // Pass second paarameter as * to allow all
 // Preflight error is because we have a Authorization header

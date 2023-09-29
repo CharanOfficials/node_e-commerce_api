@@ -1,8 +1,8 @@
 import UserModel from "./user.model.js"
 import jwt from 'jsonwebtoken'
-import env from '../../env.js'
 import { ApplicaationError } from "../../../error-handler/applicationError.js"
 import UserRepository from "./user.repository.js"
+import bcrypt from 'bcrypt'
 
 export class UsersController{
     constructor() {
@@ -11,7 +11,8 @@ export class UsersController{
     async signUp(req, res) {
         try {
             const { name, email, password, type } = req.body
-            const newUser = new UserModel(name, email, password, type)
+            const hashedPassword = await bcrypt.hash(password, 12)
+            const newUser = new UserModel(name, email, hashedPassword, type)
             await this.userRepository.signUp(newUser)
             res.status(201).send("User successfully created")
         } catch (err) {
@@ -21,22 +22,27 @@ export class UsersController{
     }
     async signIn(req, res) {
         try {
-            const validUser = await this.userRepository.signIn(req.body.email, req.body.password, req.body.type)
+            const validUser = await this.userRepository.findByEmail(req.body.email, req.body.type) 
             if (!validUser) {
-                res.status(400).send("Invalid Credentials")
+                res.status(400).send("Invalid Credentials User")
             } else {
-                const token = jwt.sign({
-                    userId: validUser.id,
-                    userEmail: validUser.email,
-                    userType: validUser.type
-                }, env.jwtSecret,
-                    {
-                        expiresIn: "1h"
-                    }
-                )
-                res.status(200).send(token)
+                const result = await bcrypt.compare(req.body.password, validUser.password)
+                if (result) {
+                    const token = jwt.sign({
+                        userId: validUser._id,
+                        userEmail: validUser.email,
+                        userType: validUser.type
+                    }, process.env.JWT_SECRET,
+                        {
+                            expiresIn: "1h"
+                        }
+                    )
+                    res.status(200).send(token)
+                } else {
+                    res.status(400).send("Invalid Credentials")
+                }}
             }
-        }catch(err) {
+        catch(err) {
             console.log(err)
             throw new ApplicaationError("Something went wrong", 500)
         }} 

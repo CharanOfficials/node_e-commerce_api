@@ -5,8 +5,16 @@ const CartRouter = express.Router()
 const cartItemController = new CartItemsController()
 
 // Be careful while using below types of routes
-CartRouter.post('/', cartItemController.add)
-CartRouter.get('/', cartItemController.get)
-CartRouter.put('/', cartItemController.update)
-CartRouter.delete('/:id', cartItemController.delete)
+CartRouter.post('/', (req, res) => {
+    cartItemController.add(req, res)
+})
+CartRouter.get('/', (req, res) => {
+    cartItemController.get(req, res)
+})
+// CartRouter.put('/', (req, res) => {
+//     cartItemController.update(req, res)
+// })
+CartRouter.delete('/:id', (req, res) => {
+    cartItemController.delete(req, res)
+})
 export default CartRouter

@@ -1,59 +1,99 @@
 
+import ProductRepository from './product.repository.js'
 import ProductModel from './product_models.js'
 class ProductController {
+    constructor() {
+        this.productRepository = new ProductRepository()
+    }
     // to get all the products
-    getAllProducts(req, res) {
-        const products = ProductModel.getAll()
-        res.status(200).send(products)
+    async getAllProducts(req, res) {
+        try {
+            const products = await this.productRepository.getAll()
+            res.status(200).send(products)
+        }catch (err) {
+            console.log(err)
+            throw new ApplicaationError("Something went wrong", 500)
+        }
     }
     // to add a product
     
-    addProduct(req, res) {
-        const { name, price, sizes } = req.body
-        // console.log(req.file)
-        const newPrduct = {
-            name, 
-            price: parseFloat(price),
-            sizes: sizes.split(','),
-            imageUrl: req.file.filename
+    async addProduct(req, res) {
+        try {
+            const { name, desc, category, sizes, price } = req.body
+            // console.log(req.file)
+            const newProduct = new ProductModel(
+                name,
+                desc,
+                req.file.filename,
+                category,
+                parseFloat(price),
+                sizes.split(',')
+            )
+            // console.log(req.file)
+            if (req.type === "seller") {
+                const createdRecord = await this.productRepository.add(newProduct)
+                res.status(201).send(createdRecord) // resource created
+            } else {
+                res.status(400).send("Invalid User")
+            }
+        }catch (err) {
+            console.log(err)
+            throw new ApplicaationError("Something went wrong", 500)
         }
-        // console.log(req.file)
-        const createdRecord = ProductModel.add(newPrduct)
-        res.status(201).send(createdRecord) // resource created
     }
     //  to rate a product
-    rateProduct(req, res, next) {
+    async rateProduct(req, res) {
         try {
-            const userID = req.query.userID
-            const productID = req.query.productID
-            const rating = req.query.rating
-            ProductModel.rateProduct(userID, productID, rating)
+            const userID = req.userID
+            const productID = req.body.productID
+            const rating = req.body.rating
+            await this.productRepository.rateProduct(userID, productID, rating)
             res.status(200).send("Rating has been added.")
         } catch (err) {
-            next(err) 
+            console.log(err)
+            throw new ApplicaationError("Something went wrong", 500)
         }
     }
     //  to get a single product using form data
-    getProduct(req, res) {
-        const id = req.params.id
-        const product = ProductModel.get(id)
+    async getProduct(req, res) {
+        try {
+            const id = req.params.id
+            const product = await this.productRepository.getOne(id)
         
-        if (!product) {
-            return res.status(404).send("Product not found")
-        } else {
-            return res.status(200).send(product)
+            if (!product) {
+                return res.status(404).send("Product not found")
+            } else {
+                return res.status(200).send(product)
+            }
+        }catch (err) {
+            console.log(err)
+            throw new ApplicaationError("Something went wrong", 500)
         }
     }
-    filterProducts(req, res) {
-        const minPrice = req.query.minPrice;
-        const maxPrice = req.query.maxPrice;
-        const category = req.query.category;
-        const result = ProductModel.filter(
-            minPrice,
-            maxPrice,
-            category
-        );
-        res.status(200).send(result);
+    async filterProducts(req, res) {
+        try {
+            const minPrice = req.query.minPrice;
+            // const maxPrice = req.query.maxPrice;
+            // const category = req.query.category;
+            const categories = req.query.categories;
+            const result = await this.productRepository.filterProducts(
+                minPrice,
+                categories
+            );
+            res.status(200).send(result)
+        }catch (err) {
+            console.log(err)
+            throw new ApplicaationError("Something went wrong", 500)
+        }
+    }
+    async averagePrice(req, res) {
+        try {
+            const result = await this.productRepository.averageProductPricePerCategory()
+            res.status(200).send(result)
+        } catch (err) {
+            console.log(err)
+            throw new ApplicaationError("Something went wrong", 500)
+        }
     }
 }
 export default ProductController

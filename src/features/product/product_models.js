@@ -2,20 +2,13 @@ import { ApplicaationError } from '../../../error-handler/applicationError.js';
 import UserModel from '../user/user.model.js'
 class ProductModel{
   // Mapping of the class object
-    constructor(id, name, desc, imageUrl, category, price, sizes) {
-        this.id = id,
+    constructor(name, desc, imageUrl, category, price, sizes, _id) {
         this.name = name,
         this.desc = desc,
         this.imageUrl = imageUrl,
         this.category = category,
         this.price = price,
         this.sizes = sizes
-  }
-  // Add a new received product after adding the id
-  static add(product) {
-    product.id = products.length + 1; // having the issue on deletion
-    products.push(product)
-    return product
   }
   // get one product
   static get(id) {

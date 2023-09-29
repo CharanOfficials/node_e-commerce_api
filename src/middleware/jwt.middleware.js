@@ -1,7 +1,6 @@
 // To implement user specific features
 
 import jwt from "jsonwebtoken"
-import env  from '../env.js'
 const jwtauth = (req, res, next) => {
     // 1. Read token
     const token = req.header("authorization")
@@ -11,8 +10,9 @@ const jwtauth = (req, res, next) => {
     }
     // If token then check validity
     try {
-        const payloadjwt = jwt.verify(token, env.jwtSecret)
+        const payloadjwt = jwt.verify(token, process.env.JWT_SECRET)
         req.userID = payloadjwt.userId // To extract the ID in cart controller
+        req.type = payloadjwt.userType
     } catch (err) {
         // else return error
         return res.status(401).send("Unauthorized")
