@@ -2,6 +2,12 @@ import { ObjectId } from "mongodb"
 import { ApplicaationError } from "../../../error-handler/applicationError.js"
 import { getDB } from "../../config/mongodb.js"
 import User from '../user/user.repository.js'
+import mongoose from "mongoose"
+import { productSchema } from "./product.schema.js"
+import { reviewSchema } from "./reviews.schema.js"
+
+const ProductModel = mongoose.model("Product", productSchema)
+const ReviewModel = mongoose.model("Review", reviewSchema)
 class ProductRepository{
     constructor() {
         this.collection = "products"
@@ -63,24 +69,42 @@ class ProductRepository{
     }
     async rateProduct(userID, productID, rating) {
         try {
-            const db = getDB()
-            const collection = db.collection(this.collection)
-            const result = await this.user.getOneUser(userID)
-            if (!result) {
-                throw new ApplicaationError("User not found", 400)
+            // 1. check if product exist
+            let productToUpdate = await ProductModel.findById(productID)
+            if (!productToUpdate) {
+                throw new Error("Product not found")
             }
-            // Remove any existing rating
-            await collection.updateOne({
-                _id:new ObjectId(productID)
-            }, {
-                $pull:{ratings:{userID:new ObjectId(userID)}}
-            })
-            // Add a new product
-            await collection.updateOne({
-                _id: new ObjectId(productID)
-            }, {
-                $push: { ratings: { userID: new ObjectId(userID), rating } }
-            })
+            // Find the existing review
+            const userReview = await ReviewModel.findOneAndUpdate({ 'product': productID, 'user': userID },{rating:rating})
+            if (!userReview) {
+                const newReview = new ReviewModel({
+                    product: productID,
+                    user: userID,
+                    rating: rating
+                })
+                newReview.save()
+                productToUpdate.reviews = newReview
+                productToUpdate.save()
+            }
+
+            // const db = getDB()
+            // const collection = db.collection(this.collection)
+            // const result = await this.user.getOneUser(userID)
+            // if (!result) {
+            //     throw new ApplicaationError("User not found", 400)
+            // }
+            // // Remove any existing rating
+            // await collection.updateOne({
+            //     _id:new ObjectId(productID)
+            // }, {
+            //     $pull:{ratings:{userID:new ObjectId(userID)}}
+            // })
+            // // Add a new product
+            // await collection.updateOne({
+            //     _id: new ObjectId(productID)
+            // }, {
+            //     $push: { ratings: { userID: new ObjectId(userID), rating } }
+            // })
             
         } catch (err) {
             console.log(err)

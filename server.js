@@ -1,5 +1,6 @@
 import swagger from 'swagger-ui-express'
 import cors from 'cors'
+import mongoose from 'mongoose'
 import express from 'express'
 import ProductRouter from './src/features/product/product_routes.js'
 import UserRouter from './src/features/user/user.route.js'
@@ -11,6 +12,7 @@ import CartRouter from './src/features/cart_Items/cart_items.router.js'
 import { ApplicaationError } from './error-handler/applicationError.js'
 import { connectToMongoDB } from './src/config/mongodb.js'
 import dotenv from 'dotenv'
+import { connectUsingMongoose } from './src/config/mongoose.js'
 // Creating server
 const server = express()
 // Load all the environment variables
@@ -53,6 +55,9 @@ server.use((req, res) => {
 })
 // Application level error handler
 server.use((err, req, res, next) => {
+    if (err instanceof mongoose.Error.ValidationError) {
+        return res.status(400).send(err.message)
+    }
     if (err instanceof ApplicaationError) {
         return res.status(err.code).send(err.message)
     } else {
@@ -63,5 +68,6 @@ server.use((err, req, res, next) => {
 //  listening to port
 server.listen(3100, ()=> {
     console.log("Server is up")
-    connectToMongoDB()
+    // connectToMongoDB()
+    connectUsingMongoose()
 })

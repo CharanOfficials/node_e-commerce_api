@@ -8,16 +8,29 @@ export class UsersController{
     constructor() {
         this.userRepository = new UserRepository()
     }
-    async signUp(req, res) {
+    async resetPassword(req, res) {
+        const { newPassword, email } = req.body
+        const hashedPassword = await bcrypt.hash(newPassword, 12)
+        const userId = req.userID
+        try {
+            await this.userRepository.resetPassword(email, hashedPassword)
+            res.status(200).send("Password is updated")
+        } catch (err) {
+            console.log(err)
+            throw new ApplicaationError("Something went wrong with database", 500)
+        }
+    }
+    async signUp(req, res, next) {
         try {
             const { name, email, password, type } = req.body
-            const hashedPassword = await bcrypt.hash(password, 12)
-            const newUser = new UserModel(name, email, hashedPassword, type)
+            // const hashedPassword = await bcrypt.hash(password, 12)
+            const newUser = new UserModel(name, email, password, type)
             await this.userRepository.signUp(newUser)
             res.status(201).send("User successfully created")
         } catch (err) {
-            console.log(err)
-            throw new ApplicaationError("Something went wrong", 500)
+            next(err)
+            // console.log(err)
+            // throw new ApplicaationError("Something went wrong", 500)
         }
     }
     async signIn(req, res) {
