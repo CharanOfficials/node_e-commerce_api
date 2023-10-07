@@ -13,6 +13,7 @@ import { ApplicaationError } from './error-handler/applicationError.js'
 import { connectToMongoDB } from './src/config/mongodb.js'
 import dotenv from 'dotenv'
 import { connectUsingMongoose } from './src/config/mongoose.js'
+import LikesRouter from './src/features/likes/likes.routes.js'
 // Creating server
 const server = express()
 // Load all the environment variables
@@ -49,6 +50,7 @@ server.get("/", (req, res) => {
 })
 server.use('/api/users', UserRouter)
 server.use('/api/cartItems', jwtauth, CartRouter)
+server.use('/api/likes', jwtauth, LikesRouter)
 // Default request handler
 server.use((req, res) => {
     res.status(404).send("API not found. Please check our documentation for more information at /api/docs")

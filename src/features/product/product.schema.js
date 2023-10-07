@@ -16,10 +16,10 @@ export const productSchema = new mongoose.Schema({
         type: Number,
         required:true
     },
-    category: {
-        type: String,
-        required:true
-    },
+    // category: {
+    //     type: String,
+    //     required:true
+    // },
     sizes: {
         type: Array,
         required: true,
@@ -33,5 +33,9 @@ export const productSchema = new mongoose.Schema({
     reviews: {
         type: mongoose.Schema.Types.ObjectId,
         ref:'Review'
-    }
+    },
+    categories: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref:'Category'
+    }]
 })

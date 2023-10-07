@@ -5,7 +5,8 @@ import User from '../user/user.repository.js'
 import mongoose from "mongoose"
 import { productSchema } from "./product.schema.js"
 import { reviewSchema } from "./reviews.schema.js"
-
+import { categorySchema } from "./category.schema.js"
+const CategoryModel = mongoose.model("Category", categorySchema)
 const ProductModel = mongoose.model("Product", productSchema)
 const ReviewModel = mongoose.model("Review", reviewSchema)
 class ProductRepository{
@@ -13,12 +14,20 @@ class ProductRepository{
         this.collection = "products"
         this.user = new User()
     }
-    async add(newProduct) {
+    async add(productData) {
         try {
-            const db = getDB()
-            const collection = db.collection(this.collection)
-            await collection.insertOne(newProduct)
-            return newProduct
+            // console.log(productData)
+            // const db = getDB()
+            // const collection = db.collection(this.collection)
+            // await collection.insertOne(newProduct)
+            // return newProduct
+            const newProduct = new ProductModel(productData)
+            const savedProduct = await newProduct.save()
+            console.log(productData.categories)
+            await CategoryModel.updateMany(
+                { _id: { $in: productData.categories }},
+                {$addToSet:{products:savedProduct._id}}
+            )
         } catch (err) {
             console.log(err)
             throw new ApplicaationError("Something went wrong with database", 500)

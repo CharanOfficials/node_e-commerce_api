@@ -1,10 +1,11 @@
 
 import ProductRepository from './product.repository.js'
 // import productSchema from './product_models.js'
-import mongoose from 'mongoose'
+// import mongoose from 'mongoose'
 import { ApplicaationError } from '../../../error-handler/applicationError.js'
-import { productSchema } from "./product.schema.js"
-const ProductModel = mongoose.model("Product", productSchema)
+// import { productSchema } from "./product.schema.js"
+// import { categorySchema } from './category.schema.js'
+// const ProductModel = mongoose.model("Product", productSchema)
 class ProductController {
     constructor() {
         this.productRepository = new ProductRepository()
@@ -23,20 +24,20 @@ class ProductController {
     
     async addProduct(req, res) {
         try {
-            const { name, desc, category, sizes, price } = req.body
-            // console.log(req.file)
+            const { name, desc, categories, sizes, price, inStock } = req.body
+            // console.log(req.body.categories)
             if (req.type === "seller") {
-                // const createdRecord = await this.productRepository.add(newProduct)
-                const prod = await ProductModel.create({
+                const newProduct = {
                 name:name,
                 desc:desc,
                 imageUrl:req.file.filename,
                 price:parseFloat(price),
-                category: category,
+                categories: categories.split(','),
                 sizes:sizes.split(','),
-                inStock:sizes.split(',')
-                })
-                res.status(201).send(prod) // resource created
+                inStock:inStock.split(',')
+                }
+                const createProduct = await this.productRepository.add(newProduct)
+                res.status(201).send(createProduct) // resource created
             } else {
                 res.status(400).send("Invalid User")
             }
