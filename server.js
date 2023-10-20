@@ -4,7 +4,7 @@ import mongoose from 'mongoose'
 import express from 'express'
 import ProductRouter from './src/features/product/product_routes.js'
 import UserRouter from './src/features/user/user.route.js'
-import apiDocs from './swagger.json' assert {type: 'json'}
+// import apiDocs from './swagger.json' assert {type: 'json'}
 import logger from './src/middleware/logger.middleware.js'
 // import basicAuthorizer from './src/middleware/basicauth.middleware.js'
 import jwtauth from './src/middleware/jwt.middleware.js'
@@ -37,7 +37,7 @@ server.use(cors(corsOptions))
 //     next()
 // })
 
-server.use('/api/docs', swagger.serve, swagger.setup(apiDocs))
+// server.use('/api/docs', swagger.serve, swagger.setup(apiDocs))
 server.use(express.json())
 //  for all the requests related to product, redirect to product routes after authentication.
 // server.use("/api/products",basicAuthorizer, ProductRouter)
